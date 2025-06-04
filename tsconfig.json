@@ -18,7 +18,8 @@
       "@game": ["./src/game/game.ts"],
       "@game/ui": ["./src/game/ui/ui.ts"],
       "@game/tile": ["./src/game/map/map.ts"],
-      "@game/player": ["./src/game/player.ts"]
+      "@game/player": ["./src/game/player.ts"],
+      "@game/types/*": ["./src/game/types/*"]
     },
     "declaration": true,
     "declarationMap": true,
