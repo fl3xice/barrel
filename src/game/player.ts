@@ -136,40 +136,48 @@ export class PlayerController {
     // );
 
     if (direction[0] != 0 || direction[1] != 0) {
-      const v = this.addVelocity(direction);
-
-      for (const collider of COLLIDERS) {
-        if (collider.isColliderInside(this.points)) {
-          console.log("Collision");
-          this.coords[0] -= v[0] + 2;
-          this.coords[1] -= v[1] + 2;
-
-          this.velocity[0] = 0;
-          this.velocity[1] = 0;
-        }
-      }
+      this.addVelocity(direction)
     }
     if (this.velocity[0] != 0 || this.velocity[1] != 0) {
       this.subVelocity();
     }
 
-    this.coords[0] += this.velocity[0];
-    this.coords[1] += this.velocity[1];
+    this.addToCoords(this.velocity);
+    this.points = this.posToPoints(this.coords);
+  }
 
-    this.points[0][0] = this.coords[0] + this.WIDTH;
-    this.points[1][0] = this.coords[1] + this.HEIGHT;
+  addToCoords(vec: [number, number]) {
+    this.coords[0] += vec[0];
+    this.coords[1] += vec[1];
+  }
+
+  posToPoints(vec: [number, number]): [number, number][] {
+    let points: [number, number][] = [[0, 0], [0, 0]];
+    points[0][0] = vec[0];
+    points[0][1] = vec[0] + this.WIDTH;
+    points[1][0] = vec[1];
+    points[1][1] = vec[1] + this.HEIGHT;
+    return points;
   }
 
   addVelocity(direction: [number, number]) {
     const v = this.normalize(direction);
-
     v[0] *= this.speed;
     v[1] *= this.speed;
+    const nextPoints = this.posToPoints([this.coords[0] + v[0] * 2, this.coords[1] + v[1] * 2]);
+
+    // If player next step is inside collider
+    // we preventing this step
+    for (const collider of COLLIDERS) {
+      if (collider.isColliderInside(nextPoints)) {
+        this.velocity[0] = 0;
+        this.velocity[1] = 0;
+        return;
+      }
+    }
 
     this.velocity[0] += v[0];
     this.velocity[1] += v[1];
-
-    return v;
   }
 
   subVelocity() {
