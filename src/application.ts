@@ -8,13 +8,13 @@ export class Application {
     const ctx = await esbuild.context({
       entryPoints: ["src/game/index.ts"],
       bundle: true,
-      outdir: "/game",
+      outdir: "./game",
       platform: "neutral",
     });
 
     await ctx.serve({
       port: 8005,
-      servedir: "game",
+      servedir: "./game",
       host: "127.0.0.1",
     });
 
