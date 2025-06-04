@@ -1,0 +1,1 @@
+export type BarrelStorage = object;

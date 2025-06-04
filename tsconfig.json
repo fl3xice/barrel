@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": true,
+    "moduleDetection": "auto",
+    "module": "NodeNext",
+    "rootDir": "./",
+    "moduleResolution": "nodenext",
+    "baseUrl": "./",
+    "incremental": true,
+    "paths": {
+      "@app": ["./src/application.ts"],
+      "@core/engine": ["./src/core/engine.ts"],
+      "@entities": ["./src/entities.ts"],
+      "@game/canvas": ["./src/game/canvas.ts"],
+      "@game": ["./src/game/game.ts"],
+      "@game/ui": ["./src/game/ui/ui.ts"],
+      "@game/tile": ["./src/game/map/map.ts"],
+      "@game/player": ["./src/game/player.ts"]
+    },
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "alwaysStrict": true,
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": false,
+    "outDir": "dist"
+  }
+}
