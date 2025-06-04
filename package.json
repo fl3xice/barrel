@@ -7,7 +7,7 @@
     "test": "tsx --test",
     "build": "tsc && tsc-alias",
     "startBuild": "node --enable-source-maps -r tsconfig-paths/register dist/src/index.js",
-    "start": "cross-env NODE_ENV=prod tsx src/index.ts",
+    "start": "tsx src/index.ts",
     "dev": "cross-env NODE_ENV=dev tsx watch src/index.ts",
     "find-deadcode": "ts-prune",
     "fix": "eslint --fix"
