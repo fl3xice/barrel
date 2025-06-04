@@ -34,13 +34,10 @@ export class RectCollider extends Collider {
   isColliderInside(points: [number, number][]) {
     // Check if all given points are inside this rectangle
     if (
-      // Checking if one of the points inside of collider
-      // For X
-      ((this.points[0][0] < points[0][0] && points[0][0] < this.points[0][1]) ||
-        (this.points[0][0] < points[0][1] &&
-          points[0][1] < this.points[0][1])) &&
-      ((this.points[1][0] < points[0][0] && points[0][0] < this.points[1][1]) ||
-        (this.points[1][0] < points[0][1] && points[0][1] < this.points[1][1]))
+      ((points[0][0] > this.points[0][0] && points[0][0] < this.points[0][1]) ||
+        (points[0][1] > this.points[0][1] && points[0][1] < this.points[0][1])) &&
+      ((points[1][0] > this.points[1][0] && points[1][0] < this.points[1][1]) ||
+        (points[1][1] > this.points[1][1] && points[1][1] < this.points[1][1]))
     ) {
       return true;
     }
