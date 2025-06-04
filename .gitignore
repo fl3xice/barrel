@@ -1,6 +1,6 @@
 .env
 .vscode
-.pnpm-lock.yaml
+pnpm-lock.yaml
 /node_modules
 /dist
 /game/index.js

@@ -6,4 +6,6 @@ const application = container.get(Application);
 application
   .start()
   .then(() => {})
-  .catch(() => {});
+  .catch((err) => {
+    console.error(err);
+  });
