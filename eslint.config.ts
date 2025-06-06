@@ -1,7 +1,6 @@
 import js from "@eslint/js";
 import globals from "globals";
 import json from "@eslint/json";
-import markdown from "@eslint/markdown";
 import tseslint from "typescript-eslint";
 import { globalIgnores } from "eslint/config";
 import perfectionist from "eslint-plugin-perfectionist";
@@ -9,7 +8,6 @@ import perfectionist from "eslint-plugin-perfectionist";
 export default tseslint.config(
   tseslint.configs.recommended,
   json.configs.recommended,
-  markdown.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     languageOptions: { globals: globals.node },
@@ -61,5 +59,5 @@ export default tseslint.config(
       },
     },
   },
-  globalIgnores(["./dist/*"])
+  globalIgnores(["./dist/*", "./game/*"])
 );

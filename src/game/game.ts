@@ -14,9 +14,22 @@ export const createImage = (uri: string) => {
     image.width = 40;
     image.width = 40;
     image.classList.add("pixel-art");
+
+    image.onload = () => {
+      hooks.forEach((fn) => {
+        fn();
+      });
+    };
+
     return image;
   };
 };
+
+const hooks: (() => void)[] = [];
+
+export function hookSpriteLoaded(fn: () => void) {
+  hooks.push(fn);
+}
 
 export const SPRITES: SpriteList = {
   [ItemMaterial.IRON_PICKAXE]: createImage("sprites/iron_pickaxe.png"),

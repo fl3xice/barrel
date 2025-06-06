@@ -2,7 +2,9 @@ import { container } from "@game";
 import { Player } from "@entities";
 import { TileMap } from "@game/tile";
 import { UIInventory } from "@game/ui";
+import { Camera2D } from "@game/camera";
 import { inject, injectable } from "inversify";
+import { Vector2D } from "@game/types/vector2d";
 import { PlayerController } from "@game/player";
 import { canvasInit, drawBackground } from "@game/canvas";
 
@@ -20,7 +22,12 @@ class Game {
   private accumulatedTime: number = 0;
   private playerController: PlayerController;
   renderBind: (timestamp: number) => void;
+
   private tileMap: TileMap;
+
+  private camera: Camera2D;
+
+  public started: boolean = false;
 
   constructor(
     @inject(Player)
@@ -30,7 +37,8 @@ class Game {
     this.playerController = new PlayerController();
     this.playerController.draw();
     this.renderBind = this.render.bind(this);
-    this.tileMap = new TileMap();
+    this.tileMap = new TileMap(this.playerController);
+    this.camera = new Camera2D([canvas.width, canvas.height], 1);
   }
 
   render(timestamp: number) {
@@ -47,12 +55,26 @@ class Game {
     }
 
     drawBackground(ctx, canvas);
-    this.tileMap.render(ctx);
+    this.tileMap.render(ctx, this.camera);
+
+    const playerScreenPos = this.camera.worldToScreen(
+      new Vector2D(
+        this.playerController.coords[0],
+        this.playerController.coords[1]
+      )
+    );
+
+    this.camera.follow(
+      new Vector2D(
+        this.playerController.coords[0],
+        this.playerController.coords[1]
+      )
+    );
 
     ctx.drawImage(
       this.playerController.canvasPlayer,
-      this.playerController.coords[0],
-      this.playerController.coords[1],
+      playerScreenPos.x,
+      playerScreenPos.y,
       this.playerController.WIDTH,
       this.playerController.HEIGHT
     );
@@ -67,24 +89,23 @@ class Game {
 
     ctx.save();
     ctx.strokeStyle = "red";
+
     for (const collider of COLLIDERS) {
       if (collider instanceof RectCollider && collider.points.length === 2) {
-        // Draw rectangle from two points
-        const [x0, x1] = collider.points[0];
-        const [y0, y1] = collider.points[1];
+        const [xRange, yRange] = collider.points;
+
+        const topLeft = this.camera.worldToScreen(
+          new Vector2D(xRange[0], yRange[0])
+        );
+        const sizeX = (xRange[1] - xRange[0]) * this.camera.viewport.zoom;
+        const sizeY = (yRange[1] - yRange[0]) * this.camera.viewport.zoom;
+
         ctx.beginPath();
-        ctx.rect(x0, y0, x1 - x0, y1 - y0);
-        ctx.stroke();
-      } else if (collider.points.length > 1) {
-        ctx.beginPath();
-        ctx.moveTo(collider.points[0][0], collider.points[0][1]);
-        for (let i = 1; i < collider.points.length; i++) {
-          ctx.lineTo(collider.points[i][0], collider.points[i][1]);
-        }
-        ctx.closePath();
+        ctx.rect(topLeft.tuple[0], topLeft.tuple[1], sizeX, sizeY);
         ctx.stroke();
       }
     }
+
     ctx.restore();
 
     // ctx.fillStyle = "#AEAF35";
@@ -105,6 +126,7 @@ class Game {
 
   start() {
     requestAnimationFrame(this.renderBind);
+    this.started = true;
   }
 }
 

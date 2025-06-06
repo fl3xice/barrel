@@ -1,5 +1,14 @@
 export abstract class Collider {
   public points: [number, number][] = [];
+
+  getBounds(): [x: number, y: number, w: number, h: number] {
+    return [
+      this.points[0][0],
+      this.points[1][0],
+      this.points[0][1] - this.points[0][0],
+      this.points[1][1] - this.points[1][0],
+    ];
+  }
 }
 
 export class RectCollider extends Collider {
@@ -31,24 +40,20 @@ export class RectCollider extends Collider {
     return false;
   }
 
-  isColliderInside(points: [number, number][]) {
-    // Check if all given points are inside this rectangle
-    if (
-      ((points[0][0] > this.points[0][0] && points[0][0] < this.points[0][1]) ||
-        (points[0][1] > this.points[0][0] && points[0][1] < this.points[0][1])) &&
-      ((points[1][0] > this.points[1][0] && points[1][0] < this.points[1][1]) ||
-        (points[1][1] > this.points[1][0] && points[1][1] < this.points[1][1]))
-    ) {
-      return true;
-    }
+  isColliderInside(other: [number, number][]) {
+    const [[minX, maxX], [minY, maxY]] = this.points;
+    const [[oMinX, oMaxX], [oMinY, oMaxY]] = other;
 
-    return false;
+    const xOverlap = maxX > oMinX && oMaxX > minX;
+    const yOverlap = maxY > oMinY && oMaxY > minY;
+
+    return xOverlap && yOverlap;
   }
 }
 
 export const COLLIDERS = [
   new RectCollider([
-    [64 * 2, 64 + (64 * 2) + 200],
-    [64 * 2, 64 + (64 * 2) + 200],
+    [64 * 2, 64 + 64 * 2],
+    [64 * 2, 64 + 64 * 2],
   ]),
 ];

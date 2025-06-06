@@ -6,9 +6,9 @@ export class PlayerController {
   // TODO: Classes
   public points: [number, number][] = [
     // X
-    [0, 64],
+    [0, 16],
     // Y
-    [1, 64],
+    [1, 16],
   ];
 
   readonly sprite: HTMLImageElement;
@@ -22,13 +22,13 @@ export class PlayerController {
   public velocity: [number, number] = [0, 0];
 
   readonly COFF = 0.2;
-  readonly speed = 0.6;
+  readonly speed = 0.4;
 
   // Map Coordinates
   public x = 0;
   public y = 0;
 
-  public coords: [number, number] = [0, 0];
+  public coords: [number, number] = [256, 256];
 
   right: boolean = false;
   left: boolean = false;
@@ -136,8 +136,9 @@ export class PlayerController {
     // );
 
     if (direction[0] != 0 || direction[1] != 0) {
-      this.addVelocity(direction)
+      this.addVelocity(direction);
     }
+
     if (this.velocity[0] != 0 || this.velocity[1] != 0) {
       this.subVelocity();
     }
@@ -152,11 +153,15 @@ export class PlayerController {
   }
 
   posToPoints(vec: [number, number]): [number, number][] {
-    let points: [number, number][] = [[0, 0], [0, 0]];
+    const points: [number, number][] = [
+      [0, 0],
+      [0, 0],
+    ];
+
     points[0][0] = vec[0];
-    points[0][1] = vec[0] + this.WIDTH;
+    points[0][1] = vec[0] + 64;
     points[1][0] = vec[1];
-    points[1][1] = vec[1] + this.HEIGHT;
+    points[1][1] = vec[1] + 64;
     return points;
   }
 
@@ -164,7 +169,11 @@ export class PlayerController {
     const v = this.normalize(direction);
     v[0] *= this.speed;
     v[1] *= this.speed;
-    const nextPoints = this.posToPoints([this.coords[0] + v[0] * 2, this.coords[1] + v[1] * 2]);
+
+    const nextPoints = this.posToPoints([
+      this.coords[0] + v[0] * 2,
+      this.coords[1] + v[1] * 2,
+    ]);
 
     // If player next step is inside collider
     // we preventing this step
@@ -172,6 +181,7 @@ export class PlayerController {
       if (collider.isColliderInside(nextPoints)) {
         this.velocity[0] = 0;
         this.velocity[1] = 0;
+
         return;
       }
     }
@@ -193,10 +203,9 @@ export class PlayerController {
   }
 
   normalize(direction: [number, number]): [number, number] {
-    const v = Math.abs(
-      Math.sqrt(Math.pow(direction[0], 2) + Math.pow(direction[1], 2))
-    );
-    return [direction[0] / v, direction[1] / v];
+    const length = Math.sqrt(direction[0] ** 2 + direction[1] ** 2);
+    if (length === 0) return [0, 0];
+    return [direction[0] / length, direction[1] / length];
   }
 
   move(): [number, number] {

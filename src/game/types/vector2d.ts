@@ -9,6 +9,14 @@ export class Vector2D {
     return this._vector;
   }
 
+  get x(): number {
+    return this.tuple[0];
+  }
+
+  get y(): number {
+    return this.tuple[1];
+  }
+
   add(vector: Vector2D | [number, number]) {
     if (vector instanceof Vector2D) {
       return new Vector2D(
@@ -21,11 +29,9 @@ export class Vector2D {
   }
 
   normalize(): Vector2D {
-    const v = Math.abs(
-      Math.sqrt(Math.pow(this.tuple[0], 2) + Math.pow(this.tuple[1], 2))
-    );
-
-    return new Vector2D(this.tuple[0] / v, this.tuple[1] / v);
+    const length = this.length();
+    if (length === 0) return new Vector2D(0, 0);
+    return new Vector2D(this.tuple[0] / length, this.tuple[1] / length);
   }
 
   mult(vector: Vector2D | [number, number]) {
