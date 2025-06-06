@@ -1,7 +1,7 @@
 :root {
   --background: #000;
   --bla: #070707;
-  --default-background-ui: #1d1929;
+  --default-background-ui: #111111;
 }
 
 * {
@@ -37,7 +37,7 @@ body {
   margin: 0 auto;
   padding: 2px;
   border: solid 5px #030303;
-  border-radius: 1em;
+  /* border-radius: 1em; */
 }
 
 #controllers {

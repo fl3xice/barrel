@@ -28,7 +28,7 @@ export class PlayerController {
   public x = 0;
   public y = 0;
 
-  public coords: [number, number] = [256, 256];
+  public coords: [number, number] = [256 * 1.5, 256 * 2];
 
   right: boolean = false;
   left: boolean = false;
