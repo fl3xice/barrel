@@ -12,15 +12,10 @@
     "incremental": true,
     "paths": {
       "@app": ["./src/application.ts"],
-      "@core/engine": ["./src/core/engine.ts"],
-      "@entities": ["./src/entities.ts"],
-      "@game/canvas": ["./src/game/canvas.ts"],
-      "@game": ["./src/game/game.ts"],
-      "@game/ui": ["./src/game/ui/ui.ts"],
-      "@game/tile": ["./src/game/map/map.ts"],
-      "@game/player": ["./src/game/player.ts"],
-      "@game/types/*": ["./src/game/types/*"],
-      "@game/camera": ["./src/game/camera/camera.ts"]
+      "@engine": ["./src/engine/engine.ts"],
+      "@engine/renderer": ["./src/engine/renderer.ts"],
+      "@engine/ui": ["./src/engine/ui/export.ts"],
+      "@engine/math": ["./src/engine/math/export.ts"]
     },
     "declaration": true,
     "declarationMap": true,

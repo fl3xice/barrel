@@ -6,10 +6,10 @@ import { Container, injectable } from "inversify";
 export class Application {
   async start() {
     const ctx = await esbuild.context({
-      entryPoints: ["src/game/index.ts"],
+      entryPoints: ["src/game.ts"],
       bundle: true,
       outdir: "./game",
-      platform: "neutral",
+      platform: "browser",
     });
 
     await ctx.serve({

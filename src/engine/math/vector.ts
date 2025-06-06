@@ -93,3 +93,7 @@ export class Vector2D {
     }
   }
 }
+
+export function vec2(x: number, y: number) {
+  return new Vector2D(x, y);
+}
