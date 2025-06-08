@@ -1,11 +1,10 @@
-import { RectUI, TextUI } from "@engine/ui";
+import { TextUI } from "@engine/ui";
 import { Engine, container } from "@engine";
 
 const engine = container.get(Engine);
-
 const renderer = engine.setup("canvas");
 
-renderer.on("beforeRender", ({ fps }) => {
+renderer.on("beforeRender", ({ fps, alpha }) => {
   const debugFPS = new TextUI(`FPS: ${fps.toString()}`, {
     x: 25,
     y: 45,
@@ -13,14 +12,13 @@ renderer.on("beforeRender", ({ fps }) => {
     font: "20px Libre Franklin",
   });
 
-  const rect = new RectUI({
-    background: "#0E0A0E",
-    x: 20,
-    y: 25,
-    width: 200,
-    height: 25,
+  const alphaUI = new TextUI(`Interpolation: ${alpha.toString()}`, {
+    x: 25,
+    y: 80,
+    color: "white",
+    font: "20px Libre Franklin",
   });
 
-  renderer.schedule(rect);
   renderer.schedule(debugFPS);
+  renderer.schedule(alphaUI);
 });

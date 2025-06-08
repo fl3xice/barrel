@@ -1,21 +1,22 @@
 import EventEmitter from "eventemitter3";
-import TypedEmitter from "typed-emitter";
 
 export enum RenderLayer {
-  UI,
-  TILES,
-  DEFAULT,
+  TILES = 0,
+  DEFAULT = 1,
+  UI = 2,
 }
 
 type RenderInfo = {
   timestamp: number;
   fps: number;
+  alpha: number;
 };
 
 type Events = {
   beforeRender: (info: RenderInfo) => void;
   afterRender: (info: RenderInfo) => void;
   beforeClearObjects: (info: RenderInfo) => void;
+  tick: (tick: number) => void;
 };
 
 export abstract class RenderObject {
@@ -25,14 +26,17 @@ export abstract class RenderObject {
   render(ctx: CanvasRenderingContext2D): void {}
 }
 
-export class Renderer extends (EventEmitter as unknown as new () => TypedEmitter<Events>) {
+export class Renderer extends EventEmitter<Events> {
   private renderObjects: RenderObject[] = [];
 
-  private fps: number = 0;
   private lastTimeStamp: number = 0;
   private accumulatedTime: number = 0;
   private diagnosticFps: number = 0;
   private timestamp = 0;
+  private lastFpsTime = 0;
+  private frameCount: number = 0;
+
+  private static readonly TICK_RATE = 1000 / 60;
 
   constructor(private readonly ctx: CanvasRenderingContext2D) {
     super();
@@ -47,39 +51,48 @@ export class Renderer extends (EventEmitter as unknown as new () => TypedEmitter
   }
 
   private loop(timestamp: number) {
-    // TODO: ticks and other stuff...
+    if (!this.lastTimeStamp) this.lastTimeStamp = timestamp;
+    if (!this.lastFpsTime) this.lastFpsTime = timestamp;
     this.timestamp = timestamp;
-    const delta = performance.now() - this.lastTimeStamp;
-    this.lastTimeStamp = performance.now();
 
+    const delta = timestamp - this.lastTimeStamp;
+    this.lastTimeStamp = timestamp;
     this.accumulatedTime += delta;
-    this.fps++;
 
-    if (this.accumulatedTime >= 1000) {
-      this.diagnosticFps = this.fps;
-      this.fps = 0;
-      this.accumulatedTime = 0;
+    this.frameCount++;
+    const fpsDelta = timestamp - this.lastFpsTime;
+    if (fpsDelta >= 500) {
+      this.diagnosticFps = Math.round((this.frameCount / fpsDelta) * 1000);
+      this.frameCount = 0;
+      this.lastFpsTime = timestamp;
     }
+
+    while (this.accumulatedTime >= Renderer.TICK_RATE) {
+      this.emit("tick", Renderer.TICK_RATE);
+      this.accumulatedTime -= Renderer.TICK_RATE;
+    }
+
+    const info: RenderInfo = {
+      timestamp: this.timestamp,
+      fps: this.diagnosticFps,
+      alpha: this.accumulatedTime / Renderer.TICK_RATE,
+    };
 
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    this.emit("beforeRender", this.getRenderInfo());
+    this.emit("beforeRender", info);
 
-    for (const object of this.renderObjects) {
+    for (const object of this.renderObjects.sort((a, b) => a.layer - b.layer)) {
       this.render(object);
     }
 
-    this.emit("beforeClearObjects", this.getRenderInfo());
+    this.emit("beforeClearObjects", info);
     this.renderObjects = [];
-    this.emit("afterRender", this.getRenderInfo());
+    this.emit("afterRender", info);
 
     setTimeout(() => {
       requestAnimationFrame(this.loop.bind(this));
-    }, 1000 / this.diagnosticFps);
-  }
-
-  private getRenderInfo(): RenderInfo {
-    return { timestamp: this.timestamp, fps: this.diagnosticFps };
+    }, 1000 / 250);
   }
 
   private render<T extends RenderObject>(object: T) {

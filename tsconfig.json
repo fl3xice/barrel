@@ -15,7 +15,8 @@
       "@engine": ["./src/engine/engine.ts"],
       "@engine/renderer": ["./src/engine/renderer.ts"],
       "@engine/ui": ["./src/engine/ui/export.ts"],
-      "@engine/math": ["./src/engine/math/export.ts"]
+      "@engine/math": ["./src/engine/math/export.ts"],
+      "@engine/entities": ["./src/engine/entities/export.ts"]
     },
     "declaration": true,
     "declarationMap": true,

@@ -66,6 +66,21 @@ export class Engine {
   }
 }
 
+export enum EntityType {
+  PLAYER,
+  ANIMAL,
+  ENEMY,
+  NPC,
+  UNKNOWN,
+  OBJECT,
+}
+
+export class EntityManager {
+  private constructor() {}
+
+  public static createEntity() {}
+}
+
 export const container = new Container({
   autobind: true,
 });
